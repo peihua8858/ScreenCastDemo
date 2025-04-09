@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+
+    <application>
+        <activity android:name=".ScreenCastActivity" />
+        <activity
+            android:name="com.android.systemui.media.MediaProjectionPermissionActivity"
+            android:exported="true"
+            android:finishOnCloseSystemDialogs="true"
+            android:launchMode="singleTop"
+            android:excludeFromRecents="true"
+            android:visibleToInstantApps="true"/>
+        <service
+            android:name=".ScreenService"
+            android:enabled="true"
+            android:exported="true"
+            android:foregroundServiceType="mediaProjection" />
+    </application>
+</manifest>
