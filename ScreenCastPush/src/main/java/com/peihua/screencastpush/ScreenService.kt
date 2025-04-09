@@ -43,7 +43,12 @@ class ScreenService : Service() {
         Logger.addLog("create notification channel")
         val builder = Notification.Builder(this.applicationContext)
         val intent = Intent(this, ScreenCastActivity::class.java)
-        builder.setContentIntent(PendingIntent.getActivity(this, 0, intent, 0))
+        builder.setContentIntent(
+            PendingIntent.getActivity(
+                this, 0, intent,
+                PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+            )
+        )
         builder.setSmallIcon(R.drawable.ic_screen_cast)
         builder.setContentTitle("屏幕共享")
         builder.setContentText("屏幕共享中")
