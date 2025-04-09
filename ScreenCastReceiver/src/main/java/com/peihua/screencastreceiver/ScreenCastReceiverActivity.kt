@@ -42,12 +42,15 @@ class ScreenCastReceiverActivity : ComponentActivity() {
                 Box {
                     AndroidView(
                         factory = {
-                            android.view.SurfaceView(it)
+                            val surfaceView = android.view.SurfaceView(it)
+                            surfaceView.layoutParams = android.view.ViewGroup.LayoutParams(
+                                android.view.ViewGroup.LayoutParams.MATCH_PARENT,
+                                android.view.ViewGroup.LayoutParams.MATCH_PARENT
+                            )
+                            surfaceView.holder.addCallback(surfaceCallback())
+                            surfaceView
                         }, modifier = Modifier.fillMaxSize()
-                    ) {
-                        it.background = android.graphics.Color.RED.toDrawable()
-                        it.holder.addCallback(surfaceCallback())
-                    }
+                    )
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -85,7 +88,9 @@ class ScreenCastReceiverActivity : ComponentActivity() {
         return object : SurfaceHolder.Callback {
             override fun surfaceCreated(holder: SurfaceHolder) {
                 // 创建一个屏幕共享
+                Logger.addLog("surfaceCreated>>>>>>")
                 mSocketClientManager.setSurface(holder.surface)
+//                mSocketClientManager.setHost("172.16.0.81")
             }
 
             override fun surfaceChanged(
