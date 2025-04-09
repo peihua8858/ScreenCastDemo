@@ -1,5 +1,6 @@
 package com.peihua.screencastreceiver
 
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.SurfaceHolder
 import androidx.activity.ComponentActivity
@@ -22,8 +23,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import com.peihua.logger.Logger
 import com.peihua.logger.LoggerList
 import com.peihua.screencastreceiver.theme.ScreenCastReceiverTheme
+import androidx.core.graphics.drawable.toDrawable
 
 class ScreenCastReceiverActivity : ComponentActivity() {
     private val mSocketClientManager = SocketClientManager()
@@ -36,20 +39,20 @@ class ScreenCastReceiverActivity : ComponentActivity() {
         )
         setContent {
             ScreenCastReceiverTheme {
-                val hostValue = remember { mutableStateOf("") }
+                val hostValue = remember { mutableStateOf("172.16.0.81") }
                 Box {
                     AndroidView(
                         factory = {
                             android.view.SurfaceView(it)
                         }, modifier = Modifier.fillMaxSize()
                     ) {
+                        it.background= android.graphics.Color.RED.toDrawable()
                         it.holder.addCallback(surfaceCallback())
                     }
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
                             .align(alignment = Alignment.BottomCenter)
-                            .background(Color(0xFFFFFFFF))
                     ) {
                         LoggerList(
                             modifier = Modifier
@@ -69,6 +72,7 @@ class ScreenCastReceiverActivity : ComponentActivity() {
                                     hostValue.value = it
                                 })
                             Button({
+                                Logger.addLog("开始连接Ip:${hostValue.value}")
                                 mSocketClientManager.setHost(hostValue.value)
                             }) { Text("连接") }
                         }

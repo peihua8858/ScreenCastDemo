@@ -8,12 +8,16 @@ import java.lang.Exception
 import java.net.InetSocketAddress
 
 class ScreenSocketServer(address: InetSocketAddress) : WebSocketServer(address) {
-    private var mWebSocket: WebSocket? = null
+    private val mWebSockets = mutableListOf<WebSocket>()
     override fun onOpen(
         conn: WebSocket?,
         handshake: ClientHandshake?,
     ) {
-        this.mWebSocket = conn
+        Logger.addLog("onOpen:${conn?.remoteSocketAddress}，status:${handshake?.content.toString()}")
+        if (conn != null) {
+            mWebSockets.add(conn)
+            Logger.addLog("onOpen:${conn.remoteSocketAddress}，status:${handshake?.content.toString()}")
+        }
     }
 
     override fun onClose(
@@ -22,7 +26,9 @@ class ScreenSocketServer(address: InetSocketAddress) : WebSocketServer(address) 
         reason: String?,
         remote: Boolean,
     ) {
-        Logger.addLog("onClose:$reason")
+        mWebSockets.remove(conn)
+        Logger.addLog("onClose>>>code:$code,reason:$reason,remote:$remote")
+
     }
 
     override fun onMessage(conn: WebSocket?, message: String?) {
@@ -38,22 +44,38 @@ class ScreenSocketServer(address: InetSocketAddress) : WebSocketServer(address) 
     }
 
     fun send(message: String) {
-        val webSocket = mWebSocket
-        if (webSocket == null || webSocket.isOpen) {
+        if (mWebSockets.isEmpty()) {
             return
         }
-        webSocket.send(message)
+        mWebSockets.forEach {
+            try {
+                it.send(message)
+            } catch (e: Exception) {
+                Logger.addELog("sendData>>>socket:$it,error:${e.message}")
+            }
+        }
     }
 
     fun sendData(data: ByteArray) {
-        val webSocket = mWebSocket
-        if (webSocket == null || webSocket.isOpen) {
+        if (mWebSockets.isEmpty()) {
             return
         }
-        webSocket.send(data)
+        mWebSockets.forEach {
+            try {
+                it.send(data)
+            } catch (e: Exception) {
+                Logger.addELog("sendData>>>socket:$it,error:${e.message}")
+            }
+        }
     }
 
     fun close() {
-        mWebSocket?.close()
+        mWebSockets.forEach {
+            try {
+                it.close()
+            } catch (e: Exception) {
+                Logger.addELog("close>>>socket:$it,error:${e.message}")
+            }
+        }
     }
 }

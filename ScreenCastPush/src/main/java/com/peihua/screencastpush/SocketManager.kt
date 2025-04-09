@@ -12,7 +12,7 @@ class SocketManager(private val mediaProjection: MediaProjection) {
         ScreenEncoder(mediaProjection, this)
     }
 
-    fun start(mediaProjection: MediaProjection) {
+    fun start() {
         mServer.start()
         mScreenEncoder.start()
     }

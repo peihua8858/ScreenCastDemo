@@ -1,6 +1,7 @@
 package com.peihua.screencastreceiver
 
 import android.view.Surface
+import com.peihua.logger.Logger
 import java.net.URI
 
 class SocketClientManager() {
@@ -14,9 +15,8 @@ class SocketClientManager() {
     }
 
     fun setHost(host: String) {
-        mScreenCastClient = ScreenCastClient({
-            onReceiveData(it)
-        }, URI("ws://$host:$mServerPort"))
+        Logger.addLog("setHost:$host")
+        mScreenCastClient = ScreenCastClient(::onReceiveData, URI("ws://$host:$mServerPort"))
         mScreenCastClient?.connect()
     }
 

@@ -4,10 +4,11 @@ import android.media.MediaCodec
 import android.media.MediaCodecInfo
 import android.media.MediaFormat
 import android.view.Surface
+import com.peihua.logger.Logger
 
 class ScreenDecoder(private val surface: Surface) : Thread() {
-    private val VEDIO_WIDTH = 2160
-    private val VEDIO_HEIGHT = 3840
+    private val VEDIO_WIDTH = 1280
+    private val VEDIO_HEIGHT = 720
     private val VEDIO_BIT_RATE = 10000000
     private val VEDIO_FRAME_RATE = 20
     private val VEDIO_I_FRAME_INTERVAL = 1
@@ -25,6 +26,7 @@ class ScreenDecoder(private val surface: Surface) : Thread() {
     }
 
     init {
+        Logger.addLog("ScreenDecoder init")
         val mediaFormat = MediaFormat.createVideoFormat(
             MediaFormat.MIMETYPE_VIDEO_HEVC,
             VEDIO_WIDTH,
@@ -41,19 +43,24 @@ class ScreenDecoder(private val surface: Surface) : Thread() {
         mediaFormat.setInteger(MediaFormat.KEY_I_FRAME_INTERVAL, VEDIO_I_FRAME_INTERVAL)
         try {
             mMediaCodec.configure(mediaFormat, surface, null, MediaCodec.CONFIGURE_FLAG_ENCODE)
+            mMediaCodec.start()
+            Logger.addLog("ScreenDecoder init success")
         } catch (e: Exception) {
             e.printStackTrace()
+            Logger.addELog("ScreenDecoder init fail. createEncoderByType error:${e.message}")
         }
     }
 
     override fun run() {
-        mMediaCodec.start()
+
     }
 
     fun decodeData(bytes: ByteArray) {
+        Logger.addLog("decodeData:${bytes.size}")
         val index = mMediaCodec.dequeueInputBuffer(DECODE_TIME_OUT)
         if (index >= 0) {
             val inputBuffer = mMediaCodec.getInputBuffer(index)
+            Logger.addLog("decodeData inputBuffer:${inputBuffer?.remaining()}")
             inputBuffer?.apply {
                 clear()
                 put(bytes, 0, bytes.size)
@@ -62,14 +69,17 @@ class ScreenDecoder(private val surface: Surface) : Thread() {
         }
         val bufferInfo = MediaCodec.BufferInfo()
         var outputBufferIndex = mMediaCodec.dequeueOutputBuffer(bufferInfo, DECODE_TIME_OUT)
+        Logger.addLog("decodeData outputBufferIndex:$outputBufferIndex")
         while (outputBufferIndex >= 0) {
             mMediaCodec.releaseOutputBuffer(outputBufferIndex, true)
             outputBufferIndex = mMediaCodec.dequeueOutputBuffer(bufferInfo, 0)
+            Logger.addLog("decodeData outputBufferIndex:$outputBufferIndex")
         }
     }
 
     fun stopDecoder() {
         mMediaCodec.stop()
         mMediaCodec.release()
+        Logger.addLog("ScreenDecoder stop")
     }
 }

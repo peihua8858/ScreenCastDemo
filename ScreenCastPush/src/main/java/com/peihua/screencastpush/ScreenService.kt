@@ -16,13 +16,24 @@ class ScreenService : Service() {
         getSystemService(MediaProjectionManager::class.java)
     }
     private var resultData: Intent? = null
-    private var requestCode = 0
+    private var resultCode = 0
     private val mSocketManager: SocketManager by lazy {
-        val mediaProjection = mMediaProjectionManager.getMediaProjection(
-            requestCode,
-            resultData!!
-        )
-        SocketManager(mediaProjection)
+        try {
+            val mediaProjection = mMediaProjectionManager.getMediaProjection(
+                resultCode,
+                resultData!!
+            )
+            if (mediaProjection == null) {
+                Logger.addLog("mediaProjection is null")
+                throw Exception("mediaProjection is null")
+            }
+            SocketManager(mediaProjection)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Logger.addLog("start service error:${e.message}")
+            throw e
+        }
+
     }
 
     fun Intent?.getParcelableExtraCompat(name: String, clazz: Class<Intent>): Intent? {
@@ -69,9 +80,10 @@ class ScreenService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        requestCode = intent?.getIntExtra("requestCode", 0) ?: 0
-        resultData = intent?.getParcelableExtraCompat("resultData", Intent::class.java)
-        Logger.addLog("onStartCommand>>>$requestCode,$resultData")
+        resultCode = intent?.getIntExtra("resultCode", 0) ?: 0
+        resultData = intent?.getParcelableExtra("resultData")
+        Logger.addLog("onStartCommand>>>$resultCode,${resultData?.dataString}")
+        mSocketManager.start()
         return super.onStartCommand(intent, flags, startId)
     }
 
