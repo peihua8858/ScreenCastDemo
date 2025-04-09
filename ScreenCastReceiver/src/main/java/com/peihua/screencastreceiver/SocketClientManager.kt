@@ -10,8 +10,8 @@ class SocketClientManager() {
     private var mScreenCastClient: ScreenCastClient? = null
 
     fun setSurface(surface: Surface) {
-        mScreenDecoder = ScreenDecoder(surface)
-        mScreenDecoder?.start()
+        mScreenDecoder = ScreenDecoder()
+        mScreenDecoder?.start(surface)
     }
 
     fun setHost(host: String) {

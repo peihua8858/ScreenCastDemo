@@ -9,7 +9,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ScreenCastDemo">
         <activity
-            android:name="com.peihua.screencastreceiver.ScreenCastReceiverActivity"
+            android:name="com.peihua.screencastreceiver.MainActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.ScreenCastDemo">

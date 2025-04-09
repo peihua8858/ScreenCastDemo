@@ -9,6 +9,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -23,21 +24,31 @@ class Logger {
     }
 
     private fun addLog(log: String) {
+        checkRange(logs)
         logs.add(0, LogData(Log.DEBUG, log, System.currentTimeMillis()))
         Log.d("Logger", log)
     }
 
+    private fun checkRange(data: SnapshotStateList<LogData>) {
+        if (data.size > 500) {
+            data.removeAt(data.size - 1)
+        }
+    }
+
     private fun addELog(log: String) {
+        checkRange(logs)
         logs.add(0, LogData(Log.ERROR, log, System.currentTimeMillis()))
         Log.e("Logger", log)
     }
 
     private fun addWLog(log: String) {
+        checkRange(logs)
         logs.add(0, LogData(Log.WARN, log, System.currentTimeMillis()))
         Log.w("Logger", log)
     }
 
     private fun addILog(log: String) {
+        checkRange(logs)
         logs.add(0, LogData(Log.INFO, log, System.currentTimeMillis()))
         Log.i("Logger", log)
     }

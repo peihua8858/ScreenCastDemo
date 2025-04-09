@@ -1,6 +1,5 @@
 package com.peihua.screencastreceiver
 
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.SurfaceHolder
 import androidx.activity.ComponentActivity
@@ -46,7 +45,7 @@ class ScreenCastReceiverActivity : ComponentActivity() {
                             android.view.SurfaceView(it)
                         }, modifier = Modifier.fillMaxSize()
                     ) {
-                        it.background= android.graphics.Color.RED.toDrawable()
+                        it.background = android.graphics.Color.RED.toDrawable()
                         it.holder.addCallback(surfaceCallback())
                     }
                     Column(

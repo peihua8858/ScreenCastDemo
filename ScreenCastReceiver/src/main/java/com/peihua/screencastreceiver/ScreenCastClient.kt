@@ -33,6 +33,6 @@ class ScreenCastClient(private val onReceiverData: (ByteArray) -> Unit, uri: URI
     }
 
     override fun onError(ex: Exception?) {
-        Logger.addELog("onError:${ex?.message}")
+        Logger.addELog("onError:${ex?.stackTraceToString()?:"unknown error"}")
     }
 }
