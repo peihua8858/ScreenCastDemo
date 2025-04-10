@@ -30,8 +30,10 @@ class Logger {
     }
 
     private fun checkRange(data: SnapshotStateList<LogData>) {
-        if (data.size > 500) {
-            data.removeAt(data.size - 1)
+        synchronized(data) {
+            if (data.size > 500) {
+                data.removeAt(data.size - 1)
+            }
         }
     }
 

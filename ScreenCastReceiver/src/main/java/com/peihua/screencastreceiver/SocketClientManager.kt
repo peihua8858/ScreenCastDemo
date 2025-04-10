@@ -16,7 +16,7 @@ class SocketClientManager() {
 
     fun setHost(host: String) {
         Logger.addLog("setHost:$host")
-        mScreenCastClient = ScreenCastClient(::onReceiveData, URI("ws://$host:$mServerPort"))
+        mScreenCastClient = ScreenCastClient(::onReceiveData,::stop, URI("ws://$host:$mServerPort"))
         mScreenCastClient?.connect()
     }
 

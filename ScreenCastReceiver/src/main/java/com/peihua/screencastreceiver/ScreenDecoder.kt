@@ -7,8 +7,11 @@ import android.view.Surface
 import com.peihua.logger.Logger
 
 class ScreenDecoder() {
-    private val VIDEO_WIDTH = 1280
-    private val VIDEO_HEIGHT = 720
+    //    private val VIDEO_WIDTH = 1280
+//    private val VIDEO_HEIGHT = 720
+    private val VIDEO_WIDTH = 1920
+    private val VIDEO_HEIGHT = 1080
+
     private val SCREEN_FRAME_RATE = 20
     private val SCREEN_FRAME_INTERVAL = 1
     private val DECODE_TIME_OUT = 10000L
@@ -24,7 +27,11 @@ class ScreenDecoder() {
         Logger.addLog("ScreenDecoder init")
         // 配置MediaCodec
         val mediaFormat =
-            MediaFormat.createVideoFormat(MediaFormat.MIMETYPE_VIDEO_HEVC, VIDEO_WIDTH, VIDEO_HEIGHT);
+            MediaFormat.createVideoFormat(
+                MediaFormat.MIMETYPE_VIDEO_HEVC,
+                VIDEO_WIDTH,
+                VIDEO_HEIGHT
+            );
         // 设置比特率
         mediaFormat.setInteger(MediaFormat.KEY_BIT_RATE, VIDEO_WIDTH * VIDEO_HEIGHT);
         // 设置帧率
@@ -53,7 +60,7 @@ class ScreenDecoder() {
                 inputBuffer?.put(data, 0, data.size);
                 mMediaCodec.queueInputBuffer(index, 0, data.size, System.currentTimeMillis(), 0);
             }
-            val bufferInfo =  MediaCodec.BufferInfo();
+            val bufferInfo = MediaCodec.BufferInfo();
             var outputBufferIndex = mMediaCodec.dequeueOutputBuffer(bufferInfo, DECODE_TIME_OUT);
             Logger.addLog("decodeData outputBufferIndex:$outputBufferIndex")
             while (outputBufferIndex > 0) {
@@ -62,7 +69,7 @@ class ScreenDecoder() {
                 Logger.addLog("decodeData outputBufferIndex:$outputBufferIndex")
             }
         } catch (e: Exception) {
-           e.printStackTrace()
+            e.printStackTrace()
             Logger.addELog("ScreenDecoder decodeData fail. dequeueInputBuffer error:${e.message}")
         }
 

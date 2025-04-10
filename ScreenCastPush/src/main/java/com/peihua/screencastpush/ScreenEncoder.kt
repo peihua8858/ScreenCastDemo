@@ -13,8 +13,10 @@ class ScreenEncoder(
     private val mMediaProjection: MediaProjection,
     private val mSocketManager: SocketManager,
 ) : Thread() {
-    private val VIDEO_WIDTH = 1280
-    private val VIDEO_HEIGHT = 720
+    //    private val VIDEO_WIDTH = 3840
+//    private val VIDEO_HEIGHT = 2160
+    private val VIDEO_WIDTH = 1920
+    private val VIDEO_HEIGHT = 1080
     private val SOCKET_TIME_OUT = 10000L
     private val SCREEN_FRAME_RATE = 20
     private val SCREEN_FRAME_INTERVAL = 1
@@ -37,10 +39,15 @@ class ScreenEncoder(
     init {
         Logger.addLog("ScreenEncoder init")
         val mediaFormat =
-            MediaFormat.createVideoFormat(MediaFormat.MIMETYPE_VIDEO_HEVC, VIDEO_WIDTH, VIDEO_HEIGHT)
+            MediaFormat.createVideoFormat(
+                MediaFormat.MIMETYPE_VIDEO_HEVC,
+                VIDEO_WIDTH,
+                VIDEO_HEIGHT
+            )
         Logger.addLog("ScreenEncoder init mediaFormat:$mediaFormat")
         mediaFormat.setInteger(
-            MediaFormat.KEY_COLOR_FORMAT, MediaCodecInfo.CodecCapabilities.COLOR_FormatSurface);
+            MediaFormat.KEY_COLOR_FORMAT, MediaCodecInfo.CodecCapabilities.COLOR_FormatSurface
+        );
         Logger.addLog("ScreenEncoder color COLOR_FormatSurface")
         // 设置比特率
         // 比特率&#xff08;比特/秒&#xff09;
@@ -66,7 +73,8 @@ class ScreenEncoder(
                 DisplayManager.VIRTUAL_DISPLAY_FLAG_PUBLIC,
                 surface,
                 null,
-                null);
+                null
+            );
             Logger.addLog("ScreenEncoder init success")
         } catch (e: Exception) {
             e.printStackTrace()

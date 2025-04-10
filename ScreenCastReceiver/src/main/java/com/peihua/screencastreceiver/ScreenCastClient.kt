@@ -7,7 +7,7 @@ import java.lang.Exception
 import java.net.URI
 import java.nio.ByteBuffer
 
-class ScreenCastClient(private val onReceiverData: (ByteArray) -> Unit, uri: URI) :
+class ScreenCastClient(private val onReceiverData: (ByteArray) -> Unit, onClose:()-> Unit, uri: URI) :
     WebSocketClient(uri) {
     init {
         Logger.addLog("ScreenCastClient init, uri:$uri")
